@@ -1,3 +1,7 @@
+$LOAD_PATH << "lib"
+require 'singleton'
+require 'mini_rake/late_time'
+
 TASKS = {}
 
 class Task
@@ -9,8 +13,11 @@ class Task
 
   def invoke
     return if @already_invoked
-    @deps.each { |dep| TASKS[dep].invoke }
-    execute
+    @deps.each do |dep|
+      # puts "dep: #{dep} - needed: #{TASKS[dep].needed?}"
+      TASKS[dep].invoke if TASKS[dep].needed?
+    end
+    execute if needed?
     @already_invoked = true
   end
 
@@ -33,26 +40,18 @@ class FileTask < Task
     @needs_to_invoke = true
   end
 
-  def invoke
-    return if @already_invoked
-    @deps.each do |dep|
-      TASKS[dep].execute if TASKS[dep].needed?
-    end
-    execute if needed?
-  end
-
   def timestamp
     if File.exists? @name
       return File.mtime @name
     end
-    return Time.now - (5*365*24*60*60)
+    MicroRake::LATE
   end
 
   def needed?
-    !File.exists? @name || out_of_date?
+    !File.exists?(@name) || out_of_date?
   end
 
-  def out_of_date
+  def out_of_date?
     @deps.any? { |d| TASKS[d].timestamp > timestamp }
   end
 end
@@ -66,15 +65,18 @@ def file(name, deps=[], &block)
 end
 
 def touch filename
+  puts "touch #{filename}"
   File.write filename, ""
 end
 
 def rm arg
   if arg.instance_of? Array
     arg.each do |file|
+      puts "rm #{file}"
       delete_if_exists file
     end
   else
+    puts "rm #{arg}"
     delete_if_exists arg
   end
 end
@@ -84,7 +86,7 @@ def delete_if_exists filename
 end
 
 
-require "./filetasks.rb"
+require "./testfiles/filetasks.rb"
 
 TASKS["default"].invoke if ARGV.empty? && TASKS["default"]
 ARGV.each do |arg| TASKS[arg].invoke end

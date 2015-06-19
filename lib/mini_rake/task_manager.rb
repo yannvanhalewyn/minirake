@@ -27,7 +27,6 @@ module MiniRake
 
     def main_task
       if ARGV.empty?
-        byebug
         @tasks["default"] || @tasks.values.first
       else
         self[ARGV[0]]
@@ -39,7 +38,7 @@ module MiniRake
     end
 
     def no_such_task(name)
-      puts "Could not find task #{name.chomp}"
+      puts "Could not find task #{name}"
       exit(1)
     end
 

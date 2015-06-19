@@ -1,3 +1,5 @@
+require 'singleton'
+
 module MicroRake
 
   class LateTime

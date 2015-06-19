@@ -2,8 +2,10 @@ module MiniRake
 
   class Task
     def initialize(name, deps, action=lambda{})
+      @already_invoked = false
       @name = name
-      @deps = Array deps
+      @deps = []
+      @deps = Array deps unless (!deps || deps.empty?)
       @action = action
     end
 

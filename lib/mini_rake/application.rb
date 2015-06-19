@@ -10,8 +10,7 @@ module MiniRake
 
     def run
       load_rake_file
-      # @tasks["default"].invoke if ARGV.empty? && TASKS["default"]
-      # ARGV.each do |arg| TASKS[arg].invoke end
+      run_tasks
     end
 
     def load_rake_file

@@ -9,12 +9,12 @@ module MiniRake
 
     def invoke
       return if @already_invoked
-      @deps.each do |dep|
-        # puts "dep: #{dep} - needed: #{TASKS[dep].needed?}"
-        TASKS[dep].invoke if TASKS[dep].needed?
-      end
       execute if needed?
       @already_invoked = true
+    end
+
+    def deps
+      @deps
     end
 
     def execute

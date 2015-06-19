@@ -1,6 +1,6 @@
 require 'singleton'
 
-module MicroRake
+module MiniRake
 
   class LateTime
     include Comparable
@@ -11,5 +11,4 @@ module MicroRake
     end
   end
 
-  LATE = LateTime.instance
 end

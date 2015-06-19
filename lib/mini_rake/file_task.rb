@@ -10,7 +10,7 @@ module MiniRake
       if File.exists? @name
         return File.mtime @name
       end
-      MicroRake::LATE
+      LateTime.instance
     end
 
     def needed?

@@ -6,7 +6,7 @@ module MiniRake
     end
 
     def file(name, deps=[], &block)
-      # TASKS[name] = FileTask.new(name, deps, block)
+      MiniRake.application.define_file_task(name, deps, block)
     end
   end
 

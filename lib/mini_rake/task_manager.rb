@@ -10,9 +10,13 @@ module MiniRake
       @tasks[name] = MiniRake::Task.new(name, deps, block)
     end
 
+    def define_file_task(name, deps, block)
+      @tasks[name] = MiniRake::FileTask.new(name, deps, block)
+    end
+
     def invoke_task(task)
       task.deps.each do |dep|
-        invoke_task @tasks[dep]
+        invoke_task self[dep]
       end
       task.invoke
     end
@@ -23,10 +27,15 @@ module MiniRake
 
     def main_task
       if ARGV.empty?
-        @tasks["default"] || @tasks[0]
+        byebug
+        @tasks["default"] || @tasks.values.first
       else
-        @tasks[ARGV[0]] || no_such_task(ARGV[0])
+        self[ARGV[0]]
       end
+    end
+
+    def [](name)
+      @tasks[name] || no_such_task(name)
     end
 
     def no_such_task(name)

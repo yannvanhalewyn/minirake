@@ -1,21 +1,25 @@
-class FileTask < Task
-  def initialize(name, deps, action)
-    super(name, deps, action)
-    @needs_to_invoke = true
-  end
+module MiniRake
 
-  def timestamp
-    if File.exists? @name
-      return File.mtime @name
+  class FileTask < Task
+    def initialize(name, deps, action)
+      super(name, deps, action)
+      @needs_to_invoke = true
     end
-    MicroRake::LATE
+
+    def timestamp
+      if File.exists? @name
+        return File.mtime @name
+      end
+      MicroRake::LATE
+    end
+
+    def needed?
+      !File.exists?(@name) || out_of_date?
+    end
+
+    def out_of_date?
+      @deps.any? { |d| MiniRake.application[d].timestamp > timestamp }
+    end
   end
 
-  def needed?
-    !File.exists?(@name) || out_of_date?
-  end
-
-  def out_of_date?
-    @deps.any? { |d| TASKS[d].timestamp > timestamp }
-  end
 end

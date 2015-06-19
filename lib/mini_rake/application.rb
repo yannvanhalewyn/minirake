@@ -14,7 +14,7 @@ module MiniRake
     end
 
     def load_rake_file
-      load("./testfiles/tasks.rb")
+      load("./testfiles/filetasks.rb")
     end
 
   end

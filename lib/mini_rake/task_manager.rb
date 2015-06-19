@@ -15,9 +15,6 @@ module MiniRake
     end
 
     def invoke_task(task)
-      task.deps.each do |dep|
-        invoke_task self[dep]
-      end
       task.invoke
     end
 

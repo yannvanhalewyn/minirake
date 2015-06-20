@@ -14,12 +14,20 @@ module MiniRake
       self.class.cons(newHead, self)
     end
 
-    def self.cons(head, tail)
-      new(head, tail)
-    end
-
     def empty?
       false
+    end
+
+    def to_ary
+      self.map{|val| val}.reverse
+    end
+
+    def to_s
+      "#{self.class}: [#{to_ary.join(", ")}]"
+    end
+
+    def self.cons(head, tail)
+      new(head, tail)
     end
 
     # Enumerable implementation

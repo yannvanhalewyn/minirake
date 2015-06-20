@@ -79,6 +79,18 @@ describe MiniRake::InvocationChain do
       expect(@second_node.member?("not_a_member")).to be_falsey
     end
   end
+
+  describe "to_ary" do
+    it 'returns an array from the oldest entry to the newest' do
+      expect(@second_node.to_ary).to eq(["first_node", "second_node"])
+    end
+  end
+
+  describe "#to_s" do
+    it 'prints out a formatted string with all chain elements' do
+      expect(@second_node.to_s).to eq("MiniRake::InvocationChain: [first_node, second_node]")
+    end
+  end
 end
 
 describe MiniRake::InvocationChain::EmptyInvocationChain do

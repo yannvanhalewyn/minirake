@@ -1,7 +1,10 @@
+require './lib/mini_rake/task'
+require './lib/mini_rake/late_time'
+
 module MiniRake
 
   class FileTask < Task
-    def initialize(name, deps, action)
+    def initialize(name, deps, action=lambda{})
       super(name, deps, action)
       @needs_to_invoke = true
     end
@@ -10,7 +13,7 @@ module MiniRake
       if File.exists? @name
         return File.mtime @name
       end
-      LateTime.instance
+      MiniRake::LATE
     end
 
     def needed?

@@ -11,4 +11,6 @@ module MiniRake
     end
   end
 
+  LATE = LateTime.instance
+
 end

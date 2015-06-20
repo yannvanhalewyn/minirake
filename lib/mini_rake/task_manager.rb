@@ -1,3 +1,5 @@
+require './lib/mini_rake/task'
+
 module MiniRake
 
   module TaskManager
@@ -14,12 +16,17 @@ module MiniRake
       @tasks[name] = MiniRake::FileTask.new(name, deps, block)
     end
 
-    def invoke_task(task)
-      task.invoke
-    end
-
     def run_tasks
       invoke_task main_task
+    end
+
+    def [](name)
+      @tasks[name] || no_such_task(name)
+    end
+
+    private
+    def invoke_task(task)
+      task.invoke
     end
 
     def main_task
@@ -30,13 +37,8 @@ module MiniRake
       end
     end
 
-    def [](name)
-      @tasks[name] || no_such_task(name)
-    end
-
     def no_such_task(name)
-      puts "Could not find task #{name}"
-      exit(1)
+      raise "Could not find task: '#{name}'"
     end
 
   end

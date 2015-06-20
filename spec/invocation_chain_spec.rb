@@ -62,6 +62,23 @@ describe MiniRake::InvocationChain do
       expect(@first_node.empty?).to be_falsey
     end
   end
+
+  describe "enumerable" do
+    it 'allows you to walk the tree' do
+      values = @second_node.map {|value| value }
+      expect(values).to eq(["second_node", "first_node"])
+    end
+  end
+
+  describe "#member?" do
+    it 'returns true if arg is already in tree' do
+      expect(@second_node.member?("first_node")).to be_truthy
+    end
+
+    it 'returns false if arg is not in list' do
+      expect(@second_node.member?("not_a_member")).to be_falsey
+    end
+  end
 end
 
 describe MiniRake::InvocationChain::EmptyInvocationChain do

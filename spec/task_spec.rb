@@ -36,6 +36,20 @@ describe MiniRake::Task do
         expect(task.deps.length).to eq(0)
       end
     end
+
+    context "when given a nil block" do
+      it 'stores an empty lambda' do
+        task = MiniRake::Task.new("some_task", "", nil)
+        expect{task.execute}.not_to raise_error
+      end
+    end
+  end
+
+  describe "#inspect" do
+    it 'prints out the task in a readable manner' do
+      task = MiniRake::Task.new("some_task", ["first_dep", "second_dep"])
+      expect(task.inspect).to eq("MiniRake::Task 'some_task' - deps: first_dep, second_dep")
+    end
   end
 
   describe "#execute" do
@@ -61,7 +75,7 @@ describe MiniRake::Task do
     end
   end
 
-  describe "invoke" do
+  describe "#invoke" do
     it 'calls the task' do
       @second_task.invoke
       expect(@second_task_action).to have_received(:call)
@@ -80,6 +94,20 @@ describe MiniRake::Task do
       @first_task.invoke
       expect(@first_task_action).to have_received(:call)
       expect(@second_task_action).to have_received(:call)
+    end
+
+    it 'discovers circular dependencies' do
+      first_task = MiniRake::Task.new("first_task", "second_task")
+      second_task = MiniRake::Task.new("second_task", "third_task")
+      third_task = MiniRake::Task.new("third_task", "first_task")
+      dummy_tasks = {}
+      dummy_tasks["first_task"] = first_task
+      dummy_tasks["second_task"] = second_task
+      dummy_tasks["third_task"] = third_task
+      allow(first_task.application).to receive(:[]) do |arg|
+        dummy_tasks[arg]
+      end
+      expect{first_task.invoke}.to raise_error("Circular dependencies: first_task => second_task => third_task => first_task")
     end
   end
 

@@ -1,4 +1,5 @@
 require './lib/mini_rake/task'
+require './lib/mini_rake/file_task'
 
 module MiniRake
 
@@ -21,7 +22,9 @@ module MiniRake
     end
 
     def [](name)
-      @tasks[name] || no_such_task(name)
+      @tasks[name] ||
+        create_fake_file_task(name) ||
+        no_such_task(name)
     end
 
     private
@@ -35,6 +38,11 @@ module MiniRake
       else
         self[ARGV[0]]
       end
+    end
+
+    def create_fake_file_task(task_name)
+      return false unless File.exists? task_name
+      define_file_task(task_name, [], lambda{})
     end
 
     def no_such_task(name)

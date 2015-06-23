@@ -4,7 +4,7 @@ require './lib/mini_rake/late_time'
 module MiniRake
 
   class FileTask < Task
-    def initialize(name, deps, action=lambda{})
+    def initialize(name, deps=[], action=lambda{})
       super(name, deps, action)
       @needs_to_invoke = true
     end

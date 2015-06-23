@@ -6,7 +6,7 @@ module MiniRake
 
     attr_reader :name, :deps
 
-    def initialize(name, deps, action=lambda{})
+    def initialize(name, deps=[], action=lambda{})
       @already_invoked = false
       @name = name
       @deps = []
@@ -38,7 +38,6 @@ module MiniRake
     def application
       MiniRake.application
     end
-
 
     def execute
       @action.call
